@@ -9,7 +9,6 @@ public class ADUser : BaseEntity
     public string LastName { get; set; }
     public string Email { get; set; }
     public UserType UserType { get; set; }
-
     public Guid? ManagerId { get; set; }
 }
 
