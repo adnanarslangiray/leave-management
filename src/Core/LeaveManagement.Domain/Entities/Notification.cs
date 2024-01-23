@@ -1,6 +1,8 @@
-﻿namespace LeaveManagement.Domain.Entities;
+﻿using LeaveManagement.SharedKernel;
 
-public class Notification
+namespace LeaveManagement.Domain.Entities;
+
+public class Notification : BaseEntity
 {
     public Guid UserId { get; set; }
     public string Message { get; set; }

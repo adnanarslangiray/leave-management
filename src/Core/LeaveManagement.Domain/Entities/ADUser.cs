@@ -10,6 +10,7 @@ public class ADUser : BaseEntity
     public string Email { get; set; }
     public UserType UserType { get; set; }
     public Guid? ManagerId { get; set; }
+    public ADUser Manager { get; set; }
 }
 
 public enum UserType

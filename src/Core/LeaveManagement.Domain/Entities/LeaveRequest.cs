@@ -1,8 +1,9 @@
-﻿using LeaveManagement.SharedKernel.Enum;
+﻿using LeaveManagement.SharedKernel;
+using LeaveManagement.SharedKernel.Enum;
 
 namespace LeaveManagement.Domain.Entities;
 
-public class LeaveRequest
+public class LeaveRequest : BaseEntity
 {
     public int FormNumber { get; set; }
     public int RequestNumber { get; set; }
