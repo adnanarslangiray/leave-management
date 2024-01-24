@@ -11,7 +11,8 @@ public class LeaveManagementDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(LeaveManagementDbContext).Assembly);
+        //base.OnModelCreating(modelBuilder);
     }
     public DbSet<ADUser> ADUsers { get; set; }
     public DbSet<LeaveRequest> LeaveRequests { get; set; }

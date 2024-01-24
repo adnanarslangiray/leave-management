@@ -1,4 +1,9 @@
-﻿using LeaveManagement.Persistence.Contexts;
+﻿using LeaveManagement.Application.Abstractions.Services;
+using LeaveManagement.Application.Repositories;
+using LeaveManagement.Persistence.Contexts;
+using LeaveManagement.Persistence.Repositories.Employee;
+using LeaveManagement.Persistence.Repositories.LeaveRequest;
+using LeaveManagement.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +16,15 @@ public static class ServiceRegistration
     {
         services.AddDbContext<LeaveManagementDbContext>(options
                => options.UseNpgsql(configuration.GetConnectionString("PostgreSQL"),
-               b => b.MigrationsAssembly(typeof(LeaveManagementDbContext).Assembly.FullName)));
+               b => b.MigrationsAssembly(typeof(LeaveManagementDbContext).Assembly.FullName)),
+               ServiceLifetime.Transient, ServiceLifetime.Transient);
+
+        //repositories
+        services.AddSingleton<ILeaveRequestReadRepository, LeaveRequestReadRepository>();
+        services.AddSingleton<ILeaveRequestWriteRepository, LeaveRequestWriteRepository>();
+        services.AddSingleton<IEmployeeReadRepository, EmployeeReadRepository>();
+
+        //services
+        services.AddSingleton<ILeaveRequestService, LeaveRequestService>();
     }
 }

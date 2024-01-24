@@ -1,5 +1,5 @@
 ﻿using LeaveManagement.SharedKernel;
-using LeaveManagement.SharedKernel.Enum;
+using LeaveManagement.SharedKernel.Enums;
 
 namespace LeaveManagement.Domain.Entities;
 

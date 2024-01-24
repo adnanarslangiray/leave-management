@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LeaveManagement.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Migration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,14 +56,14 @@ namespace LeaveManagement.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FormNumber = table.Column<int>(type: "integer", nullable: false),
-                    RequestNumber = table.Column<int>(type: "integer", nullable: false),
+                    FormNumber = table.Column<string>(type: "text", nullable: false),
+                    RequestNumber = table.Column<string>(type: "text", nullable: false),
                     LeaveType = table.Column<int>(type: "integer", nullable: false),
                     Reason = table.Column<string>(type: "text", nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     WorkflowStatus = table.Column<int>(type: "integer", nullable: false),
-                    AssignedUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssignedUserId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedById = table.Column<Guid>(type: "uuid", nullable: false),
                     LastModifiedById = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),

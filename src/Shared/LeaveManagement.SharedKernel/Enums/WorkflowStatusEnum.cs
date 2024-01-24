@@ -1,4 +1,4 @@
-﻿namespace LeaveManagement.SharedKernel.Enum;
+﻿namespace LeaveManagement.SharedKernel.Enums;
 
 public enum WorkflowStatusEnum
 {
