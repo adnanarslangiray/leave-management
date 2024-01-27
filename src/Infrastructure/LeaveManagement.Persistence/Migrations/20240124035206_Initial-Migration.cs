@@ -11,6 +11,10 @@ namespace LeaveManagement.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateSequence<int>(
+                name: "TempNumber",
+                startValue: 100L);
+
             migrationBuilder.CreateTable(
                 name: "ADUsers",
                 columns: table => new
@@ -18,6 +22,7 @@ namespace LeaveManagement.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
+                    FullName = table.Column<string>(type: "text", nullable: false, computedColumnSql: "\"FirstName\" || ' ' || \"LastName\"", stored: true),
                     Email = table.Column<string>(type: "text", nullable: false),
                     UserType = table.Column<int>(type: "integer", nullable: false),
                     ManagerId = table.Column<Guid>(type: "uuid", nullable: true),
@@ -57,6 +62,7 @@ namespace LeaveManagement.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FormNumber = table.Column<string>(type: "text", nullable: false),
+                    RequestFormNumber = table.Column<string>(type: "text", nullable: false, defaultValueSql: "'\"LRF-000\"' || nextval('\"TempNumber\"')"),
                     RequestNumber = table.Column<string>(type: "text", nullable: false),
                     LeaveType = table.Column<int>(type: "integer", nullable: false),
                     Reason = table.Column<string>(type: "text", nullable: false),
@@ -121,6 +127,9 @@ namespace LeaveManagement.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "CumulativeLeaveRequests");
+
+            migrationBuilder.DropSequence(
+                name: "TempNumber");
         }
     }
 }

@@ -24,7 +24,7 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
 
     public async Task<BaseResponse> Handle(CreateLeaveRequestCommand request, CancellationToken cancellationToken)
     {
-        var leaveRequest = _mapper.Map<LeaveRequest>(request);
+        var leaveRequest = _mapper.Map<LeaveRequest>(request.LeaveRequestDto);
 
         var employee = await _userReadRepository.GetByIdAsync(leaveRequest.CreatedById.ToString());
         if (employee == null)
@@ -76,6 +76,7 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
 
         leaveRequest.LastModifiedById = employee.Id;
         leaveRequest.RequestNumber = DateTime.Now.Ticks.ToString();
+        leaveRequest.FormNumber = DateTime.Now.Ticks.ToString();
 
         var result = await _leaveRequestWriteRepository.AddAsync(leaveRequest);
         await _leaveRequestWriteRepository.SaveAsync();
@@ -84,7 +85,7 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
         {
             Success = result,
             Id = result ? leaveRequest.Id.ToString() : default,
-            Message =  result ? "Leave Request added" : "Failed"
+            Message =  result ? "Created" : "Failed"
         };
     }
 }

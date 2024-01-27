@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LeaveManagement.Persistence.Migrations
 {
     [DbContext(typeof(LeaveManagementDbContext))]
-    [Migration("20240124010926_Initial-Migration")]
-    partial class InitialMigration
+    [Migration("20240124035517_Initial-Migrationn")]
+    partial class InitialMigrationn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,9 @@ namespace LeaveManagement.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.HasSequence<int>("TempNumber")
+                .StartsAt(100L);
 
             modelBuilder.Entity("LeaveManagement.Domain.Entities.ADUser", b =>
                 {
@@ -41,6 +44,12 @@ namespace LeaveManagement.Persistence.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("\"FirstName\" || ' ' || \"LastName\"", true);
 
                     b.Property<DateTime>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -125,6 +134,12 @@ namespace LeaveManagement.Persistence.Migrations
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("RequestFormNumber")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasDefaultValueSql("'LRF-000' || nextval('\"TempNumber\"')");
 
                     b.Property<string>("RequestNumber")
                         .IsRequired()

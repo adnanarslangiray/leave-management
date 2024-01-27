@@ -8,6 +8,7 @@ public class LeaveMappingProfile : Profile
 {
     public LeaveMappingProfile()
     {
+        CreateMap<LeaveRequest, CreateLeaveRequestDto>().ReverseMap();
         CreateMap<LeaveRequest, LeaveRequestDto>().ReverseMap();
     }
 

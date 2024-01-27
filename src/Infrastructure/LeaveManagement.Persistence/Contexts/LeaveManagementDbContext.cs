@@ -12,6 +12,19 @@ public class LeaveManagementDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(LeaveManagementDbContext).Assembly);
+
+        modelBuilder.HasSequence<int>("TempNumber")
+             .StartsAt(100)
+             .IncrementsBy(1);
+
+        modelBuilder.Entity<LeaveRequest>()
+               .Property(u => u.RequestFormNumber)
+               .HasDefaultValueSql("'LRF-000' || nextval('\"TempNumber\"')");
+
+
+        modelBuilder.Entity<ADUser>()
+            .Property(u => u.FullName)
+            .HasComputedColumnSql(@"""FirstName"" || ' ' || ""LastName""", true);
         //base.OnModelCreating(modelBuilder);
     }
     public DbSet<ADUser> ADUsers { get; set; }

@@ -7,6 +7,9 @@ using LeaveManagement.Persistence.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace LeaveManagement.Persistence;
 
@@ -26,5 +29,7 @@ public static class ServiceRegistration
 
         //services
         services.AddSingleton<ILeaveRequestService, LeaveRequestService>();
+        services.AddSingleton<IEmployeeService, EmployeeService>();
+
     }
 }

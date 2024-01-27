@@ -46,5 +46,8 @@ public static class ServiceRegistration
             settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             return settings;
         };
+
+
+
     }
 }

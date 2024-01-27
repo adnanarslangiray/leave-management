@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿
+
+using Newtonsoft.Json;
 
 namespace LeaveManagement.SharedKernel.Utilities;
 
