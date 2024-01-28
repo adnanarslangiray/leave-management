@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using LeaveManagement.Application.DTOs.CumulativeLeave;
+using LeaveManagement.Application.Events.DomainEvents.Concretes;
 using LeaveManagement.Application.Features.LeaveRequests.Requests.Commands;
 using LeaveManagement.Application.Repositories;
 using LeaveManagement.Domain.Entities;
@@ -13,12 +15,14 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
     private readonly ILeaveRequestWriteRepository _leaveRequestWriteRepository;
     private readonly IEmployeeReadRepository _userReadRepository;
     private readonly IMapper _mapper;
+    private readonly IMediator _mediatr;
 
-    public CreateLeaveRequestCommandHandler(ILeaveRequestWriteRepository leaveRequestWriteRepository, IMapper mapper, IEmployeeReadRepository userReadRepository)
+    public CreateLeaveRequestCommandHandler(ILeaveRequestWriteRepository leaveRequestWriteRepository, IMapper mapper, IEmployeeReadRepository userReadRepository, IMediator mediatr)
     {
         _leaveRequestWriteRepository=leaveRequestWriteRepository;
         _mapper=mapper;
         _userReadRepository=userReadRepository;
+        _mediatr=mediatr;
     }
 
 
@@ -80,6 +84,21 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
 
         var result = await _leaveRequestWriteRepository.AddAsync(leaveRequest);
         await _leaveRequestWriteRepository.SaveAsync();
+
+        // event publish edilecek
+        var cumulateLeaveRequestEvent = new CumulativeLeaveRequestEvent()
+        {
+            CumulativeLeaveCreateDto = new CumulativeLeaveCreateDto()
+            {
+                LeaveType = leaveRequest.LeaveType,
+                TotalHours =(leaveRequest.EndDate - leaveRequest.StartDate).Days * 8,
+                UserId = leaveRequest.CreatedById,
+                Year = leaveRequest.StartDate.Year
+
+            }
+
+        };
+        await _mediatr.Publish(cumulateLeaveRequestEvent);
 
         return new BaseResponse
         {
