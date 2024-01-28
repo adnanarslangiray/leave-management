@@ -12,6 +12,7 @@ public class ADUser : BaseEntity
     public UserType UserType { get; set; }
     public Guid? ManagerId { get; set; }
     public ADUser Manager { get; set; }
+
 }
 
 public enum UserType

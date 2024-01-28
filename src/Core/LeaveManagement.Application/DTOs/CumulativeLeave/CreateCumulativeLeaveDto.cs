@@ -2,7 +2,7 @@
 
 namespace LeaveManagement.Application.DTOs.CumulativeLeave;
 
-public class CumulativeLeaveCreateDto
+public class CreateCumulativeLeaveDto
 {
     public Guid UserId { get; set; }
     public LeaveTypeEnum LeaveType { get; set; }

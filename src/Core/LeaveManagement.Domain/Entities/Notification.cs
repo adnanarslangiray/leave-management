@@ -6,5 +6,6 @@ public class Notification : BaseEntity
 {
     public Guid UserId { get; set; }
     public string Message { get; set; }
+    public int Year { get; set; }
     public Guid CumulativeLeaveRequestId { get; set; }
 }

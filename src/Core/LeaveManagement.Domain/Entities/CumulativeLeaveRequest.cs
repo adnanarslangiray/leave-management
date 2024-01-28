@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.SharedKernel;
 using LeaveManagement.SharedKernel.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LeaveManagement.Domain.Entities;
 
@@ -11,4 +12,6 @@ public class CumulativeLeaveRequest : BaseEntity
     public int Year { get; set; }
 
     public ICollection<Notification> Notifications { get; set; }
+
+
 }

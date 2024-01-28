@@ -7,14 +7,14 @@ namespace LeaveManagement.Application.Features.Notifications.Handlers.Commands;
 
 public class CreateNotificationsHandler : INotificationHandler<NotificationEvent>
 {
-    private readonly ICumulativeLeaveRequestWriteRepository _cumulativeLeaveRequestWriteRepository;
+    private readonly INotificationWriteRepository _notificationWriteRepository;
     private readonly ICumulativeLeaveRequestReadRepository _cumulativeLeaveRequestReadRepository;
     private readonly IEmployeeReadRepository _employeeReadRepository;
     private readonly IMapper _mapper;
 
-    public CreateNotificationsHandler(ICumulativeLeaveRequestWriteRepository cumulativeLeaveRequestWriteRepository, IEmployeeReadRepository employeeReadRepository, ICumulativeLeaveRequestReadRepository cumulativeLeaveRequestReadRepository, IMapper mapper)
+    public CreateNotificationsHandler(INotificationWriteRepository notificationWriteRepository, IEmployeeReadRepository employeeReadRepository, ICumulativeLeaveRequestReadRepository cumulativeLeaveRequestReadRepository, IMapper mapper)
     {
-        _cumulativeLeaveRequestWriteRepository=cumulativeLeaveRequestWriteRepository;
+         _notificationWriteRepository = notificationWriteRepository;
         _employeeReadRepository=employeeReadRepository;
         _cumulativeLeaveRequestReadRepository=cumulativeLeaveRequestReadRepository;
         _mapper=mapper;
@@ -24,16 +24,20 @@ public class CreateNotificationsHandler : INotificationHandler<NotificationEvent
     {
         // notification
         var employee = await _employeeReadRepository.GetByIdAsync(notification.CreateNotificationDto.UserId.ToString());
-        var CumulativeLeaveRequest = await _cumulativeLeaveRequestReadRepository.GetByIdAsync(notification.CreateNotificationDto.CumulativeLeaveRequestId.ToString());
         var notificationDto = _mapper.Map<Domain.Entities.Notification>(notification.CreateNotificationDto);
-        CumulativeLeaveRequest.Notifications.Add(notificationDto);
+        notificationDto.CreatedAt = DateTime.UtcNow;
+        notificationDto.Year = DateTime.UtcNow.Year;
+        List<Domain.Entities.Notification> listNotification = [notificationDto];
         if (employee.ManagerId is not null)
         {
-            notificationDto.UserId = (Guid)employee.ManagerId;
-            CumulativeLeaveRequest.Notifications.Add(notificationDto);
+            var notificationManagerDto = _mapper.Map<Domain.Entities.Notification>(notification.CreateNotificationDto);
+            notificationManagerDto.CreatedAt = DateTime.UtcNow;
+            notificationManagerDto.Year = DateTime.UtcNow.Year;
+            notificationManagerDto.UserId = (Guid)employee.ManagerId;
+            notificationManagerDto.Id = Guid.NewGuid();
+            listNotification.Add(notificationManagerDto);
         }
-
-        _cumulativeLeaveRequestWriteRepository.Update(CumulativeLeaveRequest);
-        await _cumulativeLeaveRequestWriteRepository.SaveAsync();
+        await _notificationWriteRepository.AddRangeAsync(listNotification);
+        await _notificationWriteRepository.SaveAsync();
     }
 }

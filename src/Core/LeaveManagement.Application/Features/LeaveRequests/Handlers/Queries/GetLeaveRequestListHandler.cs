@@ -33,6 +33,7 @@ public class GetLeaveRequestListHandler : IRequestHandler<GetLeaveRequestListReq
         var result = await _leaveRequestService.GetLeaveRequestByUserId(request.EmployeeId, request.Page, request.Size);
         var leaveRequestDtos = _mapper.Map<List<LeaveRequestDto>>(result.Data);
         var employeeName = await _employeeService.GetEmployeeNamebyId(request.EmployeeId.ToString());
+
         leaveRequestDtos?.ForEach(x =>{x.FullName = employeeName;});
         var response = new BasePaginationResponse<List<LeaveRequestDto>>(leaveRequestDtos, true, "", request.Page, result.TotalCount, request.Size);
         return response;

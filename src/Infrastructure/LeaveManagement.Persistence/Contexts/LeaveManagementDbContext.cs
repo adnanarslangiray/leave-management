@@ -26,6 +26,7 @@ public class LeaveManagementDbContext : DbContext
             .Property(u => u.FullName)
             .HasComputedColumnSql(@"""FirstName"" || ' ' || ""LastName""", true);
         //base.OnModelCreating(modelBuilder);
+
     }
     public DbSet<ADUser> ADUsers { get; set; }
     public DbSet<LeaveRequest> LeaveRequests { get; set; }

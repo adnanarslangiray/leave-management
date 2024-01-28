@@ -1,5 +1,6 @@
 ﻿using LeaveManagement.Application;
 using LeaveManagement.Persistence.Contexts;
+using LeaveManagement.Persistence.Extensions;
 using LeaveManagement.SharedKernel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -52,7 +53,7 @@ public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
 
     public bool Update(T model)
     {
-        //_dbContext.DetachLocal(model, model.Id);
+        _dbContext.DetachLocal(model, model.Id);
         EntityEntry<T> entityEntry = Table.Update(model);
         return entityEntry.State == EntityState.Modified;
     }

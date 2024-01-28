@@ -3,7 +3,7 @@ using LeaveManagement.Application.Events.DomainEvents.Interfaces;
 
 namespace LeaveManagement.Application.Events.DomainEvents.Concretes;
 
-public class CumulativeLeaveRequestEvent : IDomainEvent
+public class UpdateCumulativeLeaveRequestEvent : IDomainEvent
 {
-    public CumulativeLeaveCreateDto CumulativeLeaveCreateDto { get; set; }
+    public UpdateCumulativeLeaveDto UpdateCumulativeLeaveDto { get; set; }
 }

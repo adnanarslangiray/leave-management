@@ -4,6 +4,7 @@ using LeaveManagement.Application.Events.DomainEvents.Concretes;
 using LeaveManagement.Application.Features.LeaveRequests.Requests.Commands;
 using LeaveManagement.Application.Repositories;
 using LeaveManagement.Domain.Entities;
+using LeaveManagement.SharedKernel.Constants;
 using LeaveManagement.SharedKernel.Enums;
 using LeaveManagement.SharedKernel.Utilities;
 using MediatR;
@@ -86,19 +87,19 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
         await _leaveRequestWriteRepository.SaveAsync();
 
         // event publish edilecek
-        var cumulateLeaveRequestEvent = new CumulativeLeaveRequestEvent()
+        var cumulateLeaveRequestEvent = new CreateCumulativeLeaveRequestEvent()
         {
-            CumulativeLeaveCreateDto = new CumulativeLeaveCreateDto()
+            CreateCumulativeLeaveDto = new CreateCumulativeLeaveDto()
             {
                 LeaveType = leaveRequest.LeaveType,
-                TotalHours =(leaveRequest.EndDate - leaveRequest.StartDate).Days * 8,
+                TotalHours =StaticVars.CalculateToTalHours(leaveRequest.StartDate,leaveRequest.EndDate),
                 UserId = leaveRequest.CreatedById,
                 Year = leaveRequest.StartDate.Year
 
             }
 
         };
-        await _mediatr.Publish(cumulateLeaveRequestEvent);
+        await _mediatr.Publish(cumulateLeaveRequestEvent, cancellationToken);
 
         return new BaseResponse
         {

@@ -12,4 +12,5 @@ public interface IReadRepository<T> : IRepository<T> where T : BaseEntity
     Task<T> GetSingleAsync(Expression<Func<T, bool>> method, bool tracking = true);
 
     Task<T> GetByIdAsync(string id, bool tracking = true);
+
 }
