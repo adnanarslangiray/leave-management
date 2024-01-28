@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LeaveManagement.Application.DTOs.CumulativeLeave;
 using LeaveManagement.Application.Events.DomainEvents.Concretes;
+using LeaveManagement.Application.Factory;
 using LeaveManagement.Application.Features.LeaveRequests.Requests.Commands;
 using LeaveManagement.Application.Repositories;
 using LeaveManagement.Domain.Entities;
@@ -8,6 +9,7 @@ using LeaveManagement.SharedKernel.Constants;
 using LeaveManagement.SharedKernel.Enums;
 using LeaveManagement.SharedKernel.Utilities;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LeaveManagement.Application.Features.LeaveRequests.Handlers.Commands;
 
@@ -17,13 +19,15 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
     private readonly IEmployeeReadRepository _userReadRepository;
     private readonly IMapper _mapper;
     private readonly IMediator _mediatr;
+    private readonly IServiceProvider _serviceProvider;
 
-    public CreateLeaveRequestCommandHandler(ILeaveRequestWriteRepository leaveRequestWriteRepository, IMapper mapper, IEmployeeReadRepository userReadRepository, IMediator mediatr)
+    public CreateLeaveRequestCommandHandler(ILeaveRequestWriteRepository leaveRequestWriteRepository, IMapper mapper, IEmployeeReadRepository userReadRepository, IMediator mediatr, IServiceProvider serviceProvider)
     {
         _leaveRequestWriteRepository=leaveRequestWriteRepository;
         _mapper=mapper;
         _userReadRepository=userReadRepository;
         _mediatr=mediatr;
+        _serviceProvider=serviceProvider;
     }
 
 
@@ -41,41 +45,11 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
             };
         }
 
-        #region Factory Pattern Uygulanacak!
+        #region Factory Pattern Uygulandı!
+        var processor = _serviceProvider.GetServices<ILeaveRequestProcessor>()
+           .FirstOrDefault(p => p.GetType() == GetProcessorType(employee.UserType));
 
-        // burada factory pattern kullanılacak
-        if (employee.UserType == UserType.WhiteCollarEmployee)
-        {
-            leaveRequest.WorkflowStatus = WorkflowStatusEnum.Pending;
-            leaveRequest.AssignedUserId = employee.ManagerId;
-        }
-        else if (employee.UserType == UserType.BlueCollarEmployee)
-        {
-            if (leaveRequest.LeaveType == LeaveTypeEnum.AnnualLeave)
-            {
-                leaveRequest.WorkflowStatus = WorkflowStatusEnum.Pending;
-                var manager = await _userReadRepository.GetByIdAsync(employee.ManagerId.ToString());
-                if (manager == null)
-                {
-                    return new BaseResponse
-                    {
-                        Success = false,
-                        Message = "Manager not found"
-                    };
-                }
-                leaveRequest.AssignedUserId = manager.ManagerId;
-            }
-            else if (leaveRequest.LeaveType == LeaveTypeEnum.ExcusedAbsence)
-            {
-                leaveRequest.WorkflowStatus = WorkflowStatusEnum.Pending;
-                leaveRequest.AssignedUserId = employee.ManagerId;
-            }
-        }
-        else if (employee.UserType == UserType.Manager)
-        {
-            leaveRequest.WorkflowStatus = WorkflowStatusEnum.None;
-            leaveRequest.AssignedUserId = null;
-        }
+        leaveRequest = await processor.ProcessLeaveRequestAsync(leaveRequest, employee);
 
         #endregion Factory Pattern Uygulanacak!
 
@@ -92,7 +66,7 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
             CreateCumulativeLeaveDto = new CreateCumulativeLeaveDto()
             {
                 LeaveType = leaveRequest.LeaveType,
-                TotalHours =StaticVars.CalculateToTalHours(leaveRequest.StartDate,leaveRequest.EndDate),
+                TotalHours =StaticVars.CalculateToTalHours(leaveRequest.StartDate, leaveRequest.EndDate),
                 UserId = leaveRequest.CreatedById,
                 Year = leaveRequest.StartDate.Year
 
@@ -106,6 +80,17 @@ public class CreateLeaveRequestCommandHandler : IRequestHandler<CreateLeaveReque
             Success = result,
             Id = result ? leaveRequest.Id.ToString() : default,
             Message =  result ? "Created" : "Failed"
+        };
+    }
+
+    private static Type GetProcessorType(UserType userType)
+    {
+        return userType switch
+        {
+            UserType.Manager => typeof(ManagerProcessor),
+            UserType.WhiteCollarEmployee => typeof(WhiteCollarEmployeeProcessor),
+            UserType.BlueCollarEmployee => typeof(BlueCollarEmployeeProcessor),
+            _ => typeof(ManagerProcessor)
         };
     }
 }

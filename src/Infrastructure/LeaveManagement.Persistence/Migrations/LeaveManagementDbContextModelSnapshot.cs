@@ -22,7 +22,7 @@ namespace LeaveManagement.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.HasSequence<int>("TempNumber")
+            modelBuilder.HasSequence<int>("MoqNumber1")
                 .StartsAt(100L);
 
             modelBuilder.Entity("LeaveManagement.Domain.Entities.ADUser", b =>
@@ -136,7 +136,7 @@ namespace LeaveManagement.Persistence.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text")
-                        .HasDefaultValueSql("'LRF-000' || nextval('\"TempNumber\"')");
+                        .HasDefaultValueSql("'LRF-000' || nextval('\"MoqNumber1\"')");
 
                     b.Property<string>("RequestNumber")
                         .IsRequired()
@@ -174,6 +174,9 @@ namespace LeaveManagement.Persistence.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

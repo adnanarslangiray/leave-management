@@ -13,13 +13,13 @@ public class LeaveManagementDbContext : DbContext
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(LeaveManagementDbContext).Assembly);
 
-        modelBuilder.HasSequence<int>("TempNumber")
+        modelBuilder.HasSequence<int>("MoqNumber1")
              .StartsAt(100)
              .IncrementsBy(1);
 
         modelBuilder.Entity<LeaveRequest>()
                .Property(u => u.RequestFormNumber)
-               .HasDefaultValueSql("'LRF-000' || nextval('\"TempNumber\"')");
+               .HasDefaultValueSql("'LRF-000' || nextval('\"MoqNumber1\"')");
 
 
         modelBuilder.Entity<ADUser>()

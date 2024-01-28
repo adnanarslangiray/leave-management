@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using LeaveManagement.Application.Factory;
 using LeaveManagement.Application.Mapper;
 using LeaveManagement.Application.PipelineBehaviours;
 using MediatR;
@@ -21,6 +22,12 @@ public static class ServiceRegistration
         //Pipeline Behaviours
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ExceptionBehaviours<,>));
+
+
+        //factory
+        services.AddTransient<ILeaveRequestProcessor, WhiteCollarEmployeeProcessor>();
+        services.AddTransient<ILeaveRequestProcessor, BlueCollarEmployeeProcessor>();
+        services.AddTransient<ILeaveRequestProcessor, ManagerProcessor>();
 
         #region ConfigureMapper
 

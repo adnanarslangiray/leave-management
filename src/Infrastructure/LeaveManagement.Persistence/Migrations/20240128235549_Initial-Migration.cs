@@ -12,7 +12,7 @@ namespace LeaveManagement.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateSequence<int>(
-                name: "TempNumber",
+                name: "MoqNumber1",
                 startValue: 100L);
 
             migrationBuilder.CreateTable(
@@ -62,7 +62,7 @@ namespace LeaveManagement.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FormNumber = table.Column<string>(type: "text", nullable: false),
-                    RequestFormNumber = table.Column<string>(type: "text", nullable: false, defaultValueSql: "'\"LRF-000\"' || nextval('\"TempNumber\"')"),
+                    RequestFormNumber = table.Column<string>(type: "text", nullable: false, defaultValueSql: "'LRF-000' || nextval('\"MoqNumber1\"')"),
                     RequestNumber = table.Column<string>(type: "text", nullable: false),
                     LeaveType = table.Column<int>(type: "integer", nullable: false),
                     Reason = table.Column<string>(type: "text", nullable: false),
@@ -87,6 +87,7 @@ namespace LeaveManagement.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     Message = table.Column<string>(type: "text", nullable: false),
+                    Year = table.Column<int>(type: "integer", nullable: false),
                     CumulativeLeaveRequestId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -129,7 +130,7 @@ namespace LeaveManagement.Persistence.Migrations
                 name: "CumulativeLeaveRequests");
 
             migrationBuilder.DropSequence(
-                name: "TempNumber");
+                name: "MoqNumber1");
         }
     }
 }

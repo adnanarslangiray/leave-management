@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LeaveManagement.Persistence.Migrations
 {
     [DbContext(typeof(LeaveManagementDbContext))]
-    [Migration("20240124035517_Initial-Migrationn")]
-    partial class InitialMigrationn
+    [Migration("20240128235549_Initial-Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace LeaveManagement.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.HasSequence<int>("TempNumber")
+            modelBuilder.HasSequence<int>("MoqNumber1")
                 .StartsAt(100L);
 
             modelBuilder.Entity("LeaveManagement.Domain.Entities.ADUser", b =>
@@ -139,7 +139,7 @@ namespace LeaveManagement.Persistence.Migrations
                         .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("text")
-                        .HasDefaultValueSql("'LRF-000' || nextval('\"TempNumber\"')");
+                        .HasDefaultValueSql("'LRF-000' || nextval('\"MoqNumber1\"')");
 
                     b.Property<string>("RequestNumber")
                         .IsRequired()
@@ -177,6 +177,9 @@ namespace LeaveManagement.Persistence.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
